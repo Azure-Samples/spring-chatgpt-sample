@@ -27,6 +27,7 @@ It enables ChatGPT to use your private data to answer the questions.
 - JDK 17
 - Maven
 - Azure CLI
+- An Azure subscription with access granted to Azure OpenAI (see more [here](https://aka.ms/oai/access))
 
 ### Prepare Azure Spring Apps instance
 
@@ -91,6 +92,7 @@ It enables ChatGPT to use your private data to answer the questions.
       -l ${LOCATION} \
       --kind OpenAI \
       --sku s0 \
+      --custom-domain ${OPENAI_RESOURCE_NAME}   
    ```
 
 1. Create the model deployments for `text-embedding-ada-002` and `gpt-35-turbo` in your Azure OpenAI service.
@@ -109,7 +111,7 @@ It enables ChatGPT to use your private data to answer the questions.
       -n ${OPENAI_RESOURCE_NAME} \
       --deployment-name gpt-35-turbo \
       --model-name gpt-35-turbo \
-      --model-version "1"  \
+      --model-version "0301"  \
       --model-format OpenAI \
       --scale-settings-scale-type "Standard"     
    ```
@@ -153,20 +155,43 @@ To run the demo, please follow these steps:
       --assign-endpoint true
    ```
 
-1. Create the storage link in the Azure Container Apps environment by using the following commands. The `az containerapp env storage set` command creates a link between the environment and the file share created with the `az storage share-rm` command.
+1. Create a Azure storage account and a file share, then add the storage link in the Azure Container Apps environment by using the following commands. The `az containerapp env storage set` command creates a link between the environment and the file share.
 
    ```bash
-   STORAGE_MOUNT_NAME="<storage-mount-name>"
+   STORAGE_ACCOUNT_NAME="<storage-account-name>"
+   FILE_SHARE_NAME="vectorstore"
+   STORAGE_MOUNT_NAME="vectorstore"
+
+   az storage account create \
+      --resource-group ${RESOURCE_GROUP} \
+      --name ${STORAGE_ACCOUNT_NAME} \
+      --kind StorageV2 \
+      --sku Standard_LRS \
+      --enable-large-file-share \
+      --output none   
+
+   az storage share-rm create \
+      --resource-group ${RESOURCE_GROUP} \
+      --storage-account ${STORAGE_ACCOUNT_NAME} \
+      --name ${FILE_SHARE_NAME} \
+      --quota 1024 \
+      --enabled-protocols SMB \
+      --output none
+
+   STORAGE_ACCOUNT_KEY=$(az storage account keys list \
+      --resource-group ${RESOURCE_GROUP} \
+      --account-name ${STORAGE_ACCOUNT_NAME} \
+      --query "[0].value" \
+      -o tsv)
 
    az containerapp env storage set \
       --resource-group ${RESOURCE_GROUP} \
       --name ${MANAGED_ENVIRONMENT} \
       --storage-name ${STORAGE_MOUNT_NAME} \
-      --azure-file-account-name $STORAGE_ACCOUNT_NAME \
-      --azure-file-account-key $STORAGE_ACCOUNT_KEY \
+      --azure-file-account-name ${STORAGE_ACCOUNT_NAME} \
+      --azure-file-account-key ${STORAGE_ACCOUNT_KEY} \
       --azure-file-share-name ${FILE_SHARE_NAME} \
-      --access-mode ReadWrite \
-      --output table
+      --access-mode ReadOnly
    ```
 
 1. Add the persistent storage to the app by using the following command:
@@ -195,11 +220,11 @@ To run the demo, please follow these steps:
       --service ${SERVICE_NAME} \
       --name ${APP_NAME} \
       --artifact-path spring-chatgpt-sample-webapi/target/spring-chatgpt-sample-webapi-0.0.1-SNAPSHOT.jar \
-      --env AZURE_OPENAI_ENDPOINT=https://<your_azure_openai_resource>.openai.azure.com \
-      --env AZURE_OPENAI_APIKEY=<your_api_key> \
-      --env AZURE_OPENAI_CHATDEPLOYMENTID=<deployment_id_of_chat_model> \
-      --env AZURE_OPENAI_EMBEDDINGDEPLOYMENTID=<deployment_id_of_embedding_model> \
-      --env VECTORSTORE_FILE=/opt/spring-chatgpt-sample/doc_store.json \
+      --env AZURE_OPENAI_ENDPOINT=https://<your_azure_openai_resource>.openai.azure.com \    
+            AZURE_OPENAI_APIKEY=<your_api_key> \
+            AZURE_OPENAI_CHATDEPLOYMENTID=gpt-35-turbo \
+            AZURE_OPENAI_EMBEDDINGDEPLOYMENTID=text-embedding-ada-002 \
+            VECTORSTORE_FILE=/opt/spring-chatgpt-sample/doc_store.json \
       --runtime-version Java_17 \
       --jvm-options '-Xms1024m -Xmx2048m'
    ```

@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +61,8 @@ public class SimpleMemoryVectorStore implements VectorStore {
 
     public void saveToJsonFile(String filePath) {
         var objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        try (var file = new FileWriter(filePath)) {
-            objectWriter.writeValue(file, data);
+        try (var fileWriter = new FileWriter(filePath, StandardCharsets.UTF_8)) {
+            objectWriter.writeValue(fileWriter, data);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
