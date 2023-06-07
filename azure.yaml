@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/alpha/azure.yaml.json
+
+name: spring-chatgpt-sample
+metadata:
+  template: spring-chatgpt-sample@0.0.1-beta
+#hooks:
+#  prerestore:
+#    shell: pwsh
+#    run: Write-Host 'Hello prerestore'
+#  postrestore:
+#    shell: pwsh
+#    run: Write-Host 'Hello postrestore'
+#  preprovision:
+#    shell: pwsh
+#    run: Write-Host 'Hello preprovision'
+#  postprovision:
+#    shell: pwsh
+#    run: Write-Host 'Hello postprovision'
+services:
+  spring-chatgpt-sample-webapi:
+    project: ./spring-chatgpt-sample-webapi/
+    host: springapp
+    language: java
+    spring:
+      deploymentName: default
+    hooks:
+      prepackage:
+        posix:
+          shell: sh
+#          run: cd ..;./mvnw clean install -N;cd spring-chatgpt-sample-common;../mvnw clean install
+          run: cd ..;curl -O https://asawikigpt.blob.core.windows.net/demo/doc_store.json;./mvnw clean install -N;cd spring-chatgpt-sample-common;../mvnw clean install
+        windows:
+          shell: pwsh
+#          run: cd ..;./mvnw.cmd clean install -N;cd spring-chatgpt-sample-common;../mvnw.cmd clean install
+          run: cd ..;Invoke-WebRequest -Uri https://asawikigpt.blob.core.windows.net/demo/doc_store.json -OutFile "doc_store.json";./mvnw.cmd clean install -N;cd spring-chatgpt-sample-common;../mvnw.cmd clean install
+      predeploy:
+        posix:
+          shell: sh
+          run: az storage file upload -s vectorstore --source ../doc_store.json --account-name ${STORAGE_ACCOUNT_NAME} --subscription ${AZURE_SUBSCRIPTION_ID}
+        windows:
+          shell: pwsh
+          run: az storage file upload -s vectorstore --source ../doc_store.json --account-name ${STORAGE_ACCOUNT_NAME} --subscription ${AZURE_SUBSCRIPTION_ID}
