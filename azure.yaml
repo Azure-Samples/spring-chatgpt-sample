@@ -7,10 +7,12 @@ hooks:
   postprovision:
     posix:
       shell: sh
-      run: az storage file upload -s vectorstore --source ./doc_store.json --account-name $STORAGE_ACCOUNT_NAME --subscription $AZURE_SUBSCRIPTION_ID
+      interactive: true
+      run: ./scripts/prepdocs.sh
     windows:
       shell: pwsh
-      run: az storage file upload -s vectorstore --source ./doc_store.json --account-name $Env:STORAGE_ACCOUNT_NAME --subscription $Env:AZURE_SUBSCRIPTION_ID
+      interactive: true
+      run: ./scripts/prepdocs.ps1
 services:
   spring-chatgpt-sample-webapi:
     project: ./spring-chatgpt-sample-webapi/
@@ -22,7 +24,7 @@ services:
       prepackage:
         posix:
           shell: sh
-          run: cd ..;curl -O https://asawikigpt.blob.core.windows.net/demo/doc_store.json;./mvnw clean install -N;cd spring-chatgpt-sample-common;../mvnw clean install
+          run: cd ..;./mvnw clean install -N;cd spring-chatgpt-sample-common;../mvnw clean install
         windows:
           shell: pwsh
-          run: cd ..;Invoke-WebRequest -Uri https://asawikigpt.blob.core.windows.net/demo/doc_store.json -OutFile "doc_store.json";./mvnw.cmd clean install -N;cd spring-chatgpt-sample-common;../mvnw.cmd clean install
+          run: cd ..;./mvnw.cmd clean install -N;cd spring-chatgpt-sample-common;../mvnw.cmd clean install
