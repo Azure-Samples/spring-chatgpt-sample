@@ -283,7 +283,7 @@ This application utilizes the following Azure resources:
 
 - [**Azure Spring Apps**](https://docs.microsoft.com/azure/spring-apps/) to host the application
 - [**Azure OpenAI**](https://docs.microsoft.com/azure/cognitive-services/openai/) for ChatGPT
-- [**Azure Storage**](https://docs.microsoft.com/azure/storage/) for vector store
+- [**Azure Storage**](https://docs.microsoft.com/azure/storage/) as the ASA file volume for the vector store to achieve persistent storage
 
 Here's a high level architecture diagram that illustrates these components. Notice that these are all contained within a single [resource group](https://docs.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-portal), that will be created for you when you create the resources.
 
