@@ -195,7 +195,7 @@ To run the demo, please follow these steps:
       --service ${SERVICE_NAME} \
       --name ${APP_NAME} \
       --artifact-path spring-chatgpt-sample-webapi/target/spring-chatgpt-sample-webapi-0.0.1-SNAPSHOT.jar \
-      --env AZURE_OPENAI_ENDPOINT=https://<your_azure_openai_resource>.openai.azure.com \
+      --env AZURE_OPENAI_ENDPOINT=<your_azure_openai_endpoint> \
       --env AZURE_OPENAI_APIKEY=<your_api_key> \
       --env AZURE_OPENAI_CHATDEPLOYMENTID=<deployment_id_of_chat_model> \
       --env AZURE_OPENAI_EMBEDDINGDEPLOYMENTID=<deployment_id_of_embedding_model> \
