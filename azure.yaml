@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/alpha/azure.yaml.json
+
+name: spring-chatgpt-sample
+metadata:
+  template: spring-chatgpt-sample@0.0.1-beta
+hooks:
+  postprovision:
+    posix:
+      shell: sh
+      interactive: true
+      run: ./scripts/prepdocs.sh
+    windows:
+      shell: pwsh
+      interactive: true
+      run: ./scripts/prepdocs.ps1
+services:
+  spring-chatgpt-sample-webapi:
+    project: ./spring-chatgpt-sample-webapi/
+    host: springapp
+    language: java
+    spring:
+      deploymentName: default
+    hooks:
+      prepackage:
+        posix:
+          shell: sh
+          run: cd ..;./mvnw clean install -N;cd spring-chatgpt-sample-common;../mvnw clean install
+        windows:
+          shell: pwsh
+          run: cd ..;./mvnw.cmd clean install -N;cd spring-chatgpt-sample-common;../mvnw.cmd clean install
