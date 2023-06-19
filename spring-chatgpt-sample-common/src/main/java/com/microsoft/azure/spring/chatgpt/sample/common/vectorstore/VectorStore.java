@@ -11,5 +11,5 @@ public interface VectorStore {
 
     List<DocEntry> searchTopKNearest(List<Double> embedding, int k);
 
-    List<DocEntry> searchTopKNearest(List<Double> embedding, int k, double cufOff);
+    List<DocEntry> searchTopKNearest(List<Double> embedding, int k, double cutOff);
 }

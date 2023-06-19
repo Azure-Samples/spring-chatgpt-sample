@@ -1,22 +1,20 @@
 package com.microsoft.azure.spring.chatgpt.sample.common.vectorstore;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@Jacksonized
 public class DocEntry {
-    private String id;
+    private final String id;
 
-    private String hash;
+    private final String hash;
 
-    private String text;
+    private final String text;
 
-    private List<Double> embedding;
+    private final List<Double> embedding;
 }

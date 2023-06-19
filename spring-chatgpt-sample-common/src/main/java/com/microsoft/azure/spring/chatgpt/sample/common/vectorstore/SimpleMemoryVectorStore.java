@@ -47,11 +47,11 @@ public class SimpleMemoryVectorStore implements VectorStore {
     }
 
     @Override
-    public List<DocEntry> searchTopKNearest(List<Double> embedding, int k, double cufOff) {
+    public List<DocEntry> searchTopKNearest(List<Double> embedding, int k, double cutOff) {
         var similarities = data.store.values().stream().map(entry -> new Similarity(
                         entry.getId(),
                         EmbeddingMath.cosineSimilarity(embedding, entry.getEmbedding())))
-                .filter(s -> s.similarity >= cufOff)
+                .filter(s -> s.similarity >= cutOff)
                 .sorted(Comparator.<Similarity>comparingDouble(s -> s.similarity).reversed())
                 .limit(k)
                 .map(s -> data.store.get(s.key))

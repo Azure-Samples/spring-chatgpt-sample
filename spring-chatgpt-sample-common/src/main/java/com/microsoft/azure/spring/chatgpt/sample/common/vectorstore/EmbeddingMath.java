@@ -12,7 +12,7 @@ public class EmbeddingMath {
 
         double dotProduct = dotProduct(vectorX, vectorY);
         double normX = norm(vectorX);
-        double normY = norm(vectorX);
+        double normY = norm(vectorY);
 
         if (normX == 0 || normY == 0) {
             throw new IllegalArgumentException("Vectors cannot have zero norm");
