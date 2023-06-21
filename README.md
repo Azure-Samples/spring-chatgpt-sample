@@ -247,6 +247,7 @@ The following prerequisites are required to use this application. Please ensure 
 - [Java 17 or later](https://learn.microsoft.com/java/openjdk/install)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - An Azure subscription with access granted to Azure OpenAI (see more [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu))
+- [Powershell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3) if you use windows
 
 ### Quickstart
 
@@ -258,7 +259,7 @@ This quickstart will show you how to authenticate on Azure, initialize using a t
 # Log in to azd. Only required once per-install.
 azd auth login
 
-# Enable Azure Spring Apps feature for AZD
+# Enable Azure Spring Apps feature for AZD. Only required once per-install.
 azd config set alpha.springapp on
 
 # First-time project setup. Initialize a project in the current directory, using this template. 
