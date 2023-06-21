@@ -104,3 +104,4 @@ module springApps 'modules/springapps/springapps.bicep' = {
 }
 
 output STORAGE_ACCOUNT_NAME string = '${storageAccountName}'
+output STORAGE_ACCOUNT_KEY string = '${storage.outputs.storageAccountKey}'

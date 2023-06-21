@@ -25,3 +25,5 @@ resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2022-0
     enabledProtocols: 'SMB'
   }
 }
+
+output storageAccountKey string = storage.listKeys().keys[0].value
