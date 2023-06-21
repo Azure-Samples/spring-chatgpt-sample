@@ -14,4 +14,5 @@ if (-not(Test-Path -Path $file -PathType Leaf)) {
 else {
     Write-Host "The file [$file] already exists."
 }
-az storage file upload -s vectorstore --source $file --account-name $Env:STORAGE_ACCOUNT_NAME --subscription $Env:AZURE_SUBSCRIPTION_ID
+az storage file upload -s vectorstore --source $file --account-name $Env:STORAGE_ACCOUNT_NAME --subscription $Env:AZURE_SUBSCRIPTION_ID --account-key $Env:STORAGE_ACCOUNT_KEY
+
