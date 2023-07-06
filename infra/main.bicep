@@ -58,9 +58,7 @@ module cognitive 'modules/cognitive/cognitive.bicep' = {
 		  name: 'gpt-35-turbo'
 		  version: '0301'
 		}
-		scaleSettings: {
-		  scaleType: 'Standard'
-		}
+		capacity: 30
 	  }
 	  {
 		name: 'text-embedding-ada-002'
@@ -69,9 +67,7 @@ module cognitive 'modules/cognitive/cognitive.bicep' = {
 		  name: 'text-embedding-ada-002'
 		  version: '2'
 		}
-		scaleSettings: {
-		  scaleType: 'Standard'
-		}
+		capacity: 30
 	  }
 	]
   }

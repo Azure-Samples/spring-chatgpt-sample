@@ -311,8 +311,7 @@ To run the demo in the local machine, please follow these steps:
             AZURE_OPENAI_CHATDEPLOYMENTID=gpt-35-turbo \
             AZURE_OPENAI_EMBEDDINGDEPLOYMENTID=text-embedding-ada-002 \
             VECTORSTORE_FILE=/opt/spring-chatgpt-sample/doc_store.json \
-      --runtime-version Java_17 \
-      --jvm-options '-Xms1024m -Xmx2048m'
+      --runtime-version Java_17
    ```
 
 
