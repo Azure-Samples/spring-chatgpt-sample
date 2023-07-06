@@ -3,7 +3,7 @@ param tags object
 param location string = resourceGroup().location
 param deployments array = []
 
-resource account 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
+resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: accountName
   location: location
   tags: tags
@@ -17,12 +17,15 @@ resource account 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
 }
 
 @batchSize(1)
-resource embedding 'Microsoft.CognitiveServices/accounts/deployments@2022-12-01' = [for deployment in deployments: {
+resource embedding 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [for deployment in deployments: {
   parent: account
   name: deployment.name
   properties: {
     model: deployment.model
-    scaleSettings: deployment.scaleSettings
+  }
+  sku: {
+	name: 'Standard'
+	capacity: deployment.capacity
   }
 }]
 
