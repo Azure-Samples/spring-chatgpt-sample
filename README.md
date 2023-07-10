@@ -234,8 +234,8 @@ To run the demo in the local machine, please follow these steps:
       --resource-group ${RESOURCE_GROUP} \
       --service ${SERVICE_NAME} \
       --name ${APP_NAME} \
-      --cpu 1 \
-      --memory 2Gi \
+      --cpu 2 \
+      --memory 4Gi \
       --min-replicas 2 \
       --max-replicas 2 \
       --assign-endpoint true
