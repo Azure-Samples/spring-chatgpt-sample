@@ -33,11 +33,16 @@ Let's jump in and get this up and running in Azure. When you are finished, you w
 
 The following prerequisites are required to use this application. Please ensure that you have them all installed locally.
 
-- [Azure Developer CLI](https://aka.ms/azd-install)
+- [Azure Developer CLI 1.2.0 or later](https://aka.ms/azd-install)
 - [Java 17 or later](https://learn.microsoft.com/java/openjdk/install)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - An Azure subscription with access granted to Azure OpenAI (see more [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu))
 - [Powershell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3) if you use windows
+
+If you are using Azure Developer CLI with the version lower than 1.2.0, then you will need to enable the feature for Azure Spring Apps support manually by the following command:
+```bash
+azd config set alpha.springapp on
+```
 
 ### Quickstart
 
@@ -48,9 +53,6 @@ This quickstart will show you how to authenticate on Azure, initialize using a t
 ```bash
 # Log in to azd. Only required once per-install.
 azd auth login
-
-# Enable Azure Spring Apps feature for AZD. Only required once per-install.
-azd config set alpha.springapp on
 
 # First-time project setup. Initialize a project in the current directory, using this template. 
 azd init --template Azure-Samples/spring-chatgpt-sample
