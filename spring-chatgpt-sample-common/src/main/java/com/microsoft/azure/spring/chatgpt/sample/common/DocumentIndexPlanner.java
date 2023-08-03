@@ -33,9 +33,9 @@ public class DocumentIndexPlanner {
             var textChunks = splitter.split(content);
             for (var chunk: textChunks) {
                 var response = client.getEmbeddings(List.of(chunk));
-                var embedding = response.getData().get(0).getEmbedding();
+                var embedding = response.getData().get(0).getEmbedding().stream().map(Double::floatValue).toList();
                 String key = UUID.randomUUID().toString();
-                vectorStore.saveDocument(key, DocEntry.builder()
+                vectorStore.saveDocument(DocEntry.builder()
                                 .id(key)
                                 .hash("")
                                 .embedding(embedding)

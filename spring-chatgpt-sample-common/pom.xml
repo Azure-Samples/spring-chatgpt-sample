@@ -20,6 +20,10 @@
             <groupId>com.knuddels</groupId>
             <artifactId>jtokkit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-search-documents</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

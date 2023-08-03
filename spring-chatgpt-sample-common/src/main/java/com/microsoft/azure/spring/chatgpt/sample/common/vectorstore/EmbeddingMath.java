@@ -5,7 +5,7 @@ import com.azure.ai.openai.models.Embeddings;
 import java.util.List;
 
 public class EmbeddingMath {
-    public static double cosineSimilarity(List<Double> vectorX, List<Double> vectorY) {
+    public static double cosineSimilarity(List<? extends Number> vectorX, List<? extends Number> vectorY) {
         if (vectorX.size() != vectorY.size()) {
             throw new IllegalArgumentException("Vectors lengths must be equal");
         }
@@ -21,20 +21,20 @@ public class EmbeddingMath {
         return dotProduct / (Math.sqrt(normX) * Math.sqrt(normY));
     }
 
-    public static double dotProduct(List<Double> vectorX, List<Double> vectorY) {
+    public static double dotProduct(List<? extends Number> vectorX, List<? extends Number> vectorY) {
         if (vectorX.size() != vectorY.size()) {
             throw new IllegalArgumentException("Vectors lengths must be equal");
         }
 
         double result = 0;
         for (int i = 0; i < vectorX.size(); ++i) {
-            result += vectorX.get(i) * vectorY.get(i);
+            result += vectorX.get(i).doubleValue() * vectorY.get(i).doubleValue();
         }
 
         return result;
     }
 
-    public static double norm(List<Double> vector) {
+    public static double norm(List<? extends Number> vector) {
         return dotProduct(vector, vector);
     }
 }

@@ -27,8 +27,8 @@ public class SimpleMemoryVectorStore implements VectorStore {
     }
 
     @Override
-    public void saveDocument(String key, DocEntry doc) {
-        data.store.put(key, doc);
+    public void saveDocument(DocEntry doc) {
+        data.store.put(doc.getId(), doc);
     }
 
     @Override
@@ -42,21 +42,21 @@ public class SimpleMemoryVectorStore implements VectorStore {
     }
 
     @Override
-    public List<DocEntry> searchTopKNearest(List<Double> embedding, int k) {
+    public List<DocEntry> searchTopKNearest(List<Float> embedding, int k) {
         return searchTopKNearest(embedding, k, 0);
     }
 
     @Override
-    public List<DocEntry> searchTopKNearest(List<Double> embedding, int k, double cutOff) {
+    public List<DocEntry> searchTopKNearest(List<Float> embedding, int k, double cutOff) {
         var similarities = data.store.values().stream().map(entry -> new Similarity(
                         entry.getId(),
-                        EmbeddingMath.cosineSimilarity(embedding, entry.getEmbedding())))
-                .filter(s -> s.similarity >= cutOff)
+                        EmbeddingMath.cosineSimilarity(embedding, entry.getEmbedding())));
+        var docs = similarities.filter(s -> s.similarity >= cutOff)
                 .sorted(Comparator.<Similarity>comparingDouble(s -> s.similarity).reversed())
                 .limit(k)
                 .map(s -> data.store.get(s.key))
                 .toList();
-        return similarities;
+        return docs;
     }
 
     public void saveToJsonFile(String filePath) {

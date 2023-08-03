@@ -16,5 +16,5 @@ public class DocEntry {
 
     private final String text;
 
-    private final List<Double> embedding;
+    private final List<Float> embedding;
 }
