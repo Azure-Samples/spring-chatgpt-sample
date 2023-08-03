@@ -40,7 +40,7 @@ public class ChatPlanner {
         // step 3. Populate the prompt template with the chunks
         var prompt = PromptTemplate.formatWithContext(candidateDocs, question);
         var processedMessages = new ArrayList<>(messages);
-        processedMessages.set(messages.size() - 1, new ChatMessage(ChatRole.USER).setContent(prompt));
+        processedMessages.set(messages.size() - 1, new ChatMessage(ChatRole.USER, prompt));
 
         // step 4. Call to OpenAI chat completion API
         var answer = client.getChatCompletions(processedMessages);
