@@ -1,0 +1,46 @@
+{
+  "name": "sample-index",
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "filterable": true
+    },
+    {
+      "name": "hash",
+      "type": "Edm.String",
+      "filterable": true,
+      "searchable": true,
+      "retrievable": true
+    },
+    {
+      "name": "text",
+      "type": "Edm.String",
+      "searchable": true,
+      "retrievable": true
+    },
+    {
+      "name": "embedding",
+      "type": "Collection(Edm.Single)",
+      "searchable": true,
+      "retrievable": true,
+      "dimensions": 1536,
+      "vectorSearchConfiguration": "vectorConfig"
+    }
+  ],
+  "corsOptions": {
+    "allowedOrigins": [
+      "*"
+    ],
+    "maxAgeInSeconds": 60
+  },
+  "vectorSearch": {
+    "algorithmConfigurations": [
+      {
+        "name": "vectorConfig",
+        "kind": "hnsw"
+      }
+    ]
+  }
+}

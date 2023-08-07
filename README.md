@@ -121,6 +121,7 @@ The Azure Developer CLI includes many other commands to help with your Azure dev
    SERVICE_NAME="<Azure-Spring-Apps-instance-name>"
    APP_NAME="<Spring-app-name>"
    OPENAI_RESOURCE_NAME="<Azure-OpenAI-resource-name>"
+   AZURE_SEARCH_RESOURCE_NAME="<Azure-Search-resource-name>"
    ```
 
 1. Use the following command to create a resource group:
@@ -195,6 +196,30 @@ The Azure Developer CLI includes many other commands to help with your Azure dev
       --model-format OpenAI   
    ```
 
+
+### Prepare Azure Cognitive Search
+1. Create the Azure Cognitive Search resource.
+   ```bash
+   az search service create \
+      -n ${AZURE_SEARCH_RESOURCE_NAME} \
+      -g ${RESOURCE_GROUP} \
+      -l ${LOCATION} \
+      --sku Standard
+   API_KEY=$(az search admin-key show \
+      --service-name ${AZURE_SEARCH_RESOURCE_NAME} \
+      -g ${RESOURCE_GROUP} \
+      --query "primaryKey"\
+      -o tsv)
+   ```
+1. Create the index of documents.
+   ```bash
+   curl -X PUT "https://${AZURE_SEARCH_RESOURCE_NAME}.search.windows.net/indexes/sample-index?api-version=2023-07-01-Preview" \
+      --header "api-key: ${API_KEY}" \
+      --header 'Content-Type: application/json' \
+      --data @az_search_index.json
+   ```
+
+
 ### Clone and Build the repo
 
 1. Run `git clone https://github.com/Azure-Samples/spring-chatgpt-sample.git`
@@ -211,7 +236,7 @@ source env.sh
 java -jar spring-chatgpt-sample-cli/target/spring-chatgpt-sample-cli-0.0.1-SNAPSHOT.jar --from=/<path>/<to>/<your>/<documents>
 ```
 
-Or [dowload](https://asawikigpt.blob.core.windows.net/demo/doc_store.json) the pre-built vector store of the [public documents](https://github.com/MicrosoftDocs/azure-docs/tree/main/articles/spring-apps) of the Azure Spring Apps.
+You can use the [public documents](https://github.com/MicrosoftDocs/azure-docs/tree/main/articles/spring-apps) of the Azure Spring Apps as the sample documents.
 
 ### Run in local
 
@@ -241,63 +266,6 @@ To run the demo in the local machine, please follow these steps:
       --assign-endpoint true
    ```
 
-1. Create a Azure storage account and a file share, then add the storage link in the Azure Container Apps environment by using the following commands. The `az containerapp env storage set` command creates a link between the environment and the file share.
-
-   ```bash
-   STORAGE_ACCOUNT_NAME="<storage-account-name>"
-   FILE_SHARE_NAME="vectorstore"
-   STORAGE_MOUNT_NAME="vectorstore"
-
-   az storage account create \
-      --resource-group ${RESOURCE_GROUP} \
-      --name ${STORAGE_ACCOUNT_NAME} \
-      --kind StorageV2 \
-      --sku Standard_LRS \
-      --enable-large-file-share \
-      --output none   
-
-   az storage share-rm create \
-      --resource-group ${RESOURCE_GROUP} \
-      --storage-account ${STORAGE_ACCOUNT_NAME} \
-      --name ${FILE_SHARE_NAME} \
-      --quota 1024 \
-      --enabled-protocols SMB \
-      --output none
-
-   STORAGE_ACCOUNT_KEY=$(az storage account keys list \
-      --resource-group ${RESOURCE_GROUP} \
-      --account-name ${STORAGE_ACCOUNT_NAME} \
-      --query "[0].value" \
-      -o tsv)
-
-   az containerapp env storage set \
-      --resource-group ${RESOURCE_GROUP} \
-      --name ${MANAGED_ENVIRONMENT} \
-      --storage-name ${STORAGE_MOUNT_NAME} \
-      --azure-file-account-name ${STORAGE_ACCOUNT_NAME} \
-      --azure-file-account-key ${STORAGE_ACCOUNT_KEY} \
-      --azure-file-share-name ${FILE_SHARE_NAME} \
-      --access-mode ReadOnly
-   ```
-
-1. Add the persistent storage to the app by using the following command:
-
-   ```bash
-   az spring app append-persistent-storage \
-      --resource-group ${RESOURCE_GROUP} \
-      --service ${SERVICE_NAME} \
-      --name ${APP_NAME} \
-      --persistent-storage-type AzureFileVolume \
-      --mount-path /opt/spring-chatgpt-sample \
-      --storage-name ${STORAGE_MOUNT_NAME}
-   ```
-
-1. Upload the vector store file to the Azure storage account built in the previous step.
-
-   ```bash
-   az storage file upload -s ${FILE_SHARE_NAME} --source ./doc_store.json
-   ```
-
 1. Use the following command to deploy the *.jar* file for the app:
 
    ```bash
@@ -310,7 +278,10 @@ To run the demo in the local machine, please follow these steps:
             AZURE_OPENAI_APIKEY=<your_api_key> \
             AZURE_OPENAI_CHATDEPLOYMENTID=gpt-35-turbo \
             AZURE_OPENAI_EMBEDDINGDEPLOYMENTID=text-embedding-ada-002 \
-            VECTORSTORE_FILE=/opt/spring-chatgpt-sample/doc_store.json \
+            VECTORSTORE_TYPE=azure-search \
+            AZURE_COGNITIVESEARCH_ENDPOINT=<your_azure_cognitive_search_endpoint> \
+            AZURE_COGNITIVESEARCH_APIKEY=<your_api_key> \
+            AZURE_COGNITIVESEARCH_INDEX=sample-index
       --runtime-version Java_17
    ```
 
