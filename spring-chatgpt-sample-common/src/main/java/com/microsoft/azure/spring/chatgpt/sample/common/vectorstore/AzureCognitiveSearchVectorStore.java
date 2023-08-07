@@ -51,4 +51,9 @@ public class AzureCognitiveSearchVectorStore implements VectorStore {
                 .map(r -> r.getDocument(DocEntry.class))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void persist() {
+        // do nothing
+    }
 }

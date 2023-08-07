@@ -18,11 +18,27 @@ public class SimpleMemoryVectorStore implements VectorStore {
 
     private final VectorStoreData data;
 
+    @Setter
+    @Getter
+    private String persistFilePath;
+
     public SimpleMemoryVectorStore() {
         this.data = new VectorStoreData();
     }
 
-    SimpleMemoryVectorStore(VectorStoreData data) {
+    public SimpleMemoryVectorStore(String persistFilePath) {
+        if (persistFilePath.isBlank()) {
+            throw new IllegalArgumentException("persistFilePath shouldn't be empty.");
+        }
+        this.data = new VectorStoreData();
+        this.persistFilePath = persistFilePath;
+    }
+
+    SimpleMemoryVectorStore(String persistFilePath, VectorStoreData data) {
+        if (persistFilePath.isBlank()) {
+            throw new IllegalArgumentException("persistFilePath shouldn't be empty.");
+        }
+        this.persistFilePath = persistFilePath;
         this.data = data;
     }
 
@@ -59,9 +75,12 @@ public class SimpleMemoryVectorStore implements VectorStore {
         return docs;
     }
 
-    public void saveToJsonFile(String filePath) {
+    public void persist() {
+        if (persistFilePath.isBlank()) {
+            throw new IllegalStateException("persistFilePath shouldn't be empty.");
+        }
         var objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        try (var fileWriter = new FileWriter(filePath, StandardCharsets.UTF_8)) {
+        try (var fileWriter = new FileWriter(persistFilePath, StandardCharsets.UTF_8)) {
             objectWriter.writeValue(fileWriter, data);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -72,7 +91,7 @@ public class SimpleMemoryVectorStore implements VectorStore {
         var reader = new ObjectMapper().reader();
         try {
             var data = reader.readValue(new File(filePath), VectorStoreData.class);
-            return new SimpleMemoryVectorStore(data);
+            return new SimpleMemoryVectorStore(filePath, data);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

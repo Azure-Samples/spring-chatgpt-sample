@@ -12,4 +12,6 @@ public interface VectorStore {
     List<DocEntry> searchTopKNearest(List<Float> embedding, int k);
 
     List<DocEntry> searchTopKNearest(List<Float> embedding, int k, double cutOff);
+
+    void persist();
 }
