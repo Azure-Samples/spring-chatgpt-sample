@@ -2,11 +2,13 @@ package com.microsoft.azure.spring.chatgpt.sample.webapi;
 
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
+import com.azure.core.util.HttpClientOptions;
 import com.microsoft.azure.spring.chatgpt.sample.common.AzureOpenAIClient;
 import com.microsoft.azure.spring.chatgpt.sample.common.ChatPlanner;
 import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.SimpleMemoryVectorStore;
 import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,6 +46,7 @@ public class Config {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "vector-store.type", havingValue = "memory", matchIfMissing = true)
     public VectorStore vectorStore() {
         return SimpleMemoryVectorStore.loadFromJsonFile(vectorJsonFile);
     }

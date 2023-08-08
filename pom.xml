@@ -9,7 +9,6 @@
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
     <modules>
-<!--        <module>spring-chatgpt-sample-common</module>-->
         <module>spring-chatgpt-sample-common</module>
         <module>spring-chatgpt-sample-webapi</module>
         <module>spring-chatgpt-sample-cli</module>
@@ -52,7 +51,7 @@
             <dependency>
                 <groupId>com.azure</groupId>
                 <artifactId>azure-search-documents</artifactId>
-                <version>11.6.0-beta.7</version>
+                <version>11.6.0-beta.8</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

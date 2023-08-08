@@ -45,7 +45,7 @@ public class AzureCognitiveSearchVectorStore implements VectorStore {
                 .setFields("embedding");    // the field name from the class DocEntry
 
         SearchPagedIterable searchResults = searchClient.search(null,
-                new SearchOptions().setVector(searchQueryVector), Context.NONE);
+                new SearchOptions().setVectors(searchQueryVector), Context.NONE);
         return searchResults.stream()
                 .filter(r -> r.getScore() >= cutOff)
                 .map(r -> r.getDocument(DocEntry.class))

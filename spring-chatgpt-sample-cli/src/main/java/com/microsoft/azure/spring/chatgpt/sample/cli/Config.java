@@ -2,13 +2,12 @@ package com.microsoft.azure.spring.chatgpt.sample.cli;
 
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
-import com.azure.search.documents.SearchClient;
-import com.azure.search.documents.SearchClientBuilder;
 import com.microsoft.azure.spring.chatgpt.sample.common.AzureOpenAIClient;
 import com.microsoft.azure.spring.chatgpt.sample.common.DocumentIndexPlanner;
-import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.AzureCognitiveSearchVectorStore;
+import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.SimpleMemoryVectorStore;
 import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,15 +26,6 @@ public class Config {
     @Value("${vector-store.file:}")
     private String vectorJsonFile;
 
-    @Value("${azure.cognitive-search.endpoint}")
-    private String acsEndpoint;
-
-    @Value("${azure.cognitive-search.api-key}")
-    private String acsApiKey;
-
-    @Value("${azure.cognitive-search.index}")
-    private String acsIndexName;
-
 
     @Bean
     public DocumentIndexPlanner planner(AzureOpenAIClient openAIClient, VectorStore vectorStore) {
@@ -51,18 +41,9 @@ public class Config {
         return new AzureOpenAIClient(innerClient, embeddingDeploymentId, null);
     }
 
-//    @Bean
-//    public VectorStore vectorStore() {
-//        return new SimpleMemoryVectorStore(vectorJsonFile);
-//    }
-
     @Bean
+    @ConditionalOnProperty(name = "vector-store.type", havingValue = "memory", matchIfMissing = true)
     public VectorStore vectorStore() {
-        final SearchClient searchClient = new SearchClientBuilder()
-                .endpoint(openAiEndpoint)
-                .credential(new AzureKeyCredential(acsApiKey))
-                .indexName(acsIndexName)
-                .buildClient();
-        return new AzureCognitiveSearchVectorStore(searchClient);
+        return new SimpleMemoryVectorStore(vectorJsonFile);
     }
 }
