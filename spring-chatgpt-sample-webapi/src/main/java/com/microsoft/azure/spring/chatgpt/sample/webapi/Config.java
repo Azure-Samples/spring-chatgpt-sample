@@ -2,7 +2,6 @@ package com.microsoft.azure.spring.chatgpt.sample.webapi;
 
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
-import com.azure.core.util.HttpClientOptions;
 import com.microsoft.azure.spring.chatgpt.sample.common.AzureOpenAIClient;
 import com.microsoft.azure.spring.chatgpt.sample.common.ChatPlanner;
 import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.SimpleMemoryVectorStore;
@@ -37,7 +36,7 @@ public class Config {
     }
 
     @Bean
-    public AzureOpenAIClient AzureOpenAIClient() {
+    public AzureOpenAIClient azureOpenAIClient() {
         var innerClient = new OpenAIClientBuilder()
             .endpoint(endpoint)
             .credential(new AzureKeyCredential(apiKey))

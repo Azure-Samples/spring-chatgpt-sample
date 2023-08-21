@@ -1,7 +1,5 @@
 package com.microsoft.azure.spring.chatgpt.sample.common.vectorstore;
 
-import com.azure.ai.openai.models.Embeddings;
-
 import java.util.List;
 
 public class EmbeddingMath {
