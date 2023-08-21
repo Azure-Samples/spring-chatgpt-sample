@@ -26,11 +26,6 @@ public class CliApplication implements ApplicationRunner {
 			System.err.println("argument --from is required.");
 			System.exit(-1);
 		}
-		var to = args.getOptionValues("to");
-		if (to == null || to.size() != 1) {
-			System.err.println("argument --to is required.");
-			System.exit(-1);
-		}
-		indexPlanner.buildFromFolder(from.get(0), to.get(0));
+		indexPlanner.buildFromFolder(from.get(0));
 	}
 }

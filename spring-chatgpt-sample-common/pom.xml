@@ -20,6 +20,17 @@
             <groupId>com.knuddels</groupId>
             <artifactId>jtokkit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-search-documents</artifactId>
+            <exclusions>
+                <!-- exclude this to avoid changing the default serializer and the null-value behavior -->
+                <exclusion>
+                    <groupId>com.azure</groupId>
+                    <artifactId>azure-core-serializer-json-jackson</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

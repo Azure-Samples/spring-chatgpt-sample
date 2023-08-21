@@ -5,7 +5,9 @@ import com.azure.core.credential.AzureKeyCredential;
 import com.microsoft.azure.spring.chatgpt.sample.common.AzureOpenAIClient;
 import com.microsoft.azure.spring.chatgpt.sample.common.DocumentIndexPlanner;
 import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.SimpleMemoryVectorStore;
+import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,27 +18,32 @@ public class Config {
     private String embeddingDeploymentId;
 
     @Value("${azure.openai.endpoint}")
-    private String endpoint;
+    private String openAiEndpoint;
 
     @Value("${azure.openai.api-key}")
-    private String apiKey;
+    private String openAiApiKey;
+
+    @Value("${vector-store.file:}")
+    private String vectorJsonFile;
+
 
     @Bean
-    public DocumentIndexPlanner planner(AzureOpenAIClient openAIClient, SimpleMemoryVectorStore vectorStore) {
+    public DocumentIndexPlanner planner(AzureOpenAIClient openAIClient, VectorStore vectorStore) {
         return new DocumentIndexPlanner(openAIClient, vectorStore);
     }
 
     @Bean
     public AzureOpenAIClient AzureOpenAIClient() {
         var innerClient = new OpenAIClientBuilder()
-                .endpoint(endpoint)
-                .credential(new AzureKeyCredential(apiKey))
+                .endpoint(openAiEndpoint)
+                .credential(new AzureKeyCredential(openAiApiKey))
                 .buildClient();
         return new AzureOpenAIClient(innerClient, embeddingDeploymentId, null);
     }
 
     @Bean
-    public SimpleMemoryVectorStore vectorStore() {
-        return new SimpleMemoryVectorStore();
+    @ConditionalOnProperty(name = "vector-store.type", havingValue = "memory", matchIfMissing = true)
+    public VectorStore vectorStore() {
+        return new SimpleMemoryVectorStore(vectorJsonFile);
     }
 }

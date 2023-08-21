@@ -18,17 +18,33 @@ public class SimpleMemoryVectorStore implements VectorStore {
 
     private final VectorStoreData data;
 
+    @Setter
+    @Getter
+    private String persistFilePath;
+
     public SimpleMemoryVectorStore() {
         this.data = new VectorStoreData();
     }
 
-    SimpleMemoryVectorStore(VectorStoreData data) {
+    public SimpleMemoryVectorStore(String persistFilePath) {
+        if (persistFilePath.isBlank()) {
+            throw new IllegalArgumentException("persistFilePath shouldn't be empty.");
+        }
+        this.data = new VectorStoreData();
+        this.persistFilePath = persistFilePath;
+    }
+
+    SimpleMemoryVectorStore(String persistFilePath, VectorStoreData data) {
+        if (persistFilePath.isBlank()) {
+            throw new IllegalArgumentException("persistFilePath shouldn't be empty.");
+        }
+        this.persistFilePath = persistFilePath;
         this.data = data;
     }
 
     @Override
-    public void saveDocument(String key, DocEntry doc) {
-        data.store.put(key, doc);
+    public void saveDocument(DocEntry doc) {
+        data.store.put(doc.getId(), doc);
     }
 
     @Override
@@ -42,26 +58,29 @@ public class SimpleMemoryVectorStore implements VectorStore {
     }
 
     @Override
-    public List<DocEntry> searchTopKNearest(List<Double> embedding, int k) {
+    public List<DocEntry> searchTopKNearest(List<Float> embedding, int k) {
         return searchTopKNearest(embedding, k, 0);
     }
 
     @Override
-    public List<DocEntry> searchTopKNearest(List<Double> embedding, int k, double cutOff) {
+    public List<DocEntry> searchTopKNearest(List<Float> embedding, int k, double cutOff) {
         var similarities = data.store.values().stream().map(entry -> new Similarity(
                         entry.getId(),
-                        EmbeddingMath.cosineSimilarity(embedding, entry.getEmbedding())))
-                .filter(s -> s.similarity >= cutOff)
+                        EmbeddingMath.cosineSimilarity(embedding, entry.getEmbedding())));
+        var docs = similarities.filter(s -> s.similarity >= cutOff)
                 .sorted(Comparator.<Similarity>comparingDouble(s -> s.similarity).reversed())
                 .limit(k)
                 .map(s -> data.store.get(s.key))
                 .toList();
-        return similarities;
+        return docs;
     }
 
-    public void saveToJsonFile(String filePath) {
+    public void persist() {
+        if (persistFilePath.isBlank()) {
+            throw new IllegalStateException("persistFilePath shouldn't be empty.");
+        }
         var objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        try (var fileWriter = new FileWriter(filePath, StandardCharsets.UTF_8)) {
+        try (var fileWriter = new FileWriter(persistFilePath, StandardCharsets.UTF_8)) {
             objectWriter.writeValue(fileWriter, data);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -72,7 +91,7 @@ public class SimpleMemoryVectorStore implements VectorStore {
         var reader = new ObjectMapper().reader();
         try {
             var data = reader.readValue(new File(filePath), VectorStoreData.class);
-            return new SimpleMemoryVectorStore(data);
+            return new SimpleMemoryVectorStore(filePath, data);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

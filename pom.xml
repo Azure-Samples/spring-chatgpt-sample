@@ -9,7 +9,6 @@
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
     <modules>
-<!--        <module>spring-chatgpt-sample-common</module>-->
         <module>spring-chatgpt-sample-common</module>
         <module>spring-chatgpt-sample-webapi</module>
         <module>spring-chatgpt-sample-cli</module>
@@ -18,7 +17,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.6</version>
+        <version>3.1.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -42,12 +41,17 @@
             <dependency>
                 <groupId>com.azure</groupId>
                 <artifactId>azure-ai-openai</artifactId>
-                <version>1.0.0-beta.2</version>
+                <version>1.0.0-beta.3</version>
             </dependency>
             <dependency>
                 <groupId>com.knuddels</groupId>
                 <artifactId>jtokkit</artifactId>
-                <version>0.5.0</version>
+                <version>0.6.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-search-documents</artifactId>
+                <version>11.6.0-beta.8</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

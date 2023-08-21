@@ -31,7 +31,7 @@ public class ChatPlanner {
 
         // step 1. Convert the user's query text to an embedding
         var response = client.getEmbeddings(List.of(question));
-        var embedding = response.getData().get(0).getEmbedding();
+        var embedding = response.getData().get(0).getEmbedding().stream().map(Double::floatValue).toList();
 
         // step 2. Query Top-K nearest text chunks from the vector store
         var candidateDocs = store.searchTopKNearest(embedding, 5, 0.4).stream()
@@ -40,7 +40,7 @@ public class ChatPlanner {
         // step 3. Populate the prompt template with the chunks
         var prompt = PromptTemplate.formatWithContext(candidateDocs, question);
         var processedMessages = new ArrayList<>(messages);
-        processedMessages.set(messages.size() - 1, new ChatMessage(ChatRole.USER).setContent(prompt));
+        processedMessages.set(messages.size() - 1, new ChatMessage(ChatRole.USER, prompt));
 
         // step 4. Call to OpenAI chat completion API
         var answer = client.getChatCompletions(processedMessages);
