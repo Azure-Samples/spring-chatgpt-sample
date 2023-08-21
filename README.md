@@ -67,7 +67,7 @@ If you want to load your own documents to the vector store, you can use the foll
 ```shell
 # under the root of the project
 mvn clean package
-java -jar spring-chatgpt-sample-cli/target/spring-chatgpt-sample-cli-0.0.1-SNAPSHOT.jar --from=/<path>/<to>/<your>/<documents> --to=doc_store.json
+java -jar spring-chatgpt-sample-cli/target/spring-chatgpt-sample-cli-0.0.1-SNAPSHOT.jar --from=/<path>/<to>/<your>/<documents>
 ```
 
 ### Application Architecture
@@ -184,17 +184,15 @@ The Azure Developer CLI includes many other commands to help with your Azure dev
       --deployment-name text-embedding-ada-002 \
       --model-name text-embedding-ada-002 \
       --model-version "2"  \
-      --model-format OpenAI \
-      --scale-settings-scale-type "Standard"
+      --model-format OpenAI
 
-    az cognitiveservices account deployment create \
+   az cognitiveservices account deployment create \
       -g ${RESOURCE_GROUP} \
       -n ${OPENAI_RESOURCE_NAME} \
       --deployment-name gpt-35-turbo \
       --model-name gpt-35-turbo \
       --model-version "0301"  \
-      --model-format OpenAI \
-      --scale-settings-scale-type "Standard"     
+      --model-format OpenAI   
    ```
 
 ### Clone and Build the repo
