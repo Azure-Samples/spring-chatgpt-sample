@@ -13,19 +13,19 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CliApplication implements ApplicationRunner {
 
-	private final DocumentIndexPlanner indexPlanner;
+    private final DocumentIndexPlanner indexPlanner;
 
-	public static void main(String[] args) {
-		SpringApplication.run(CliApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CliApplication.class, args);
+    }
 
-	@Override
-	public void run(ApplicationArguments args) throws IOException {
-		var from = args.getOptionValues("from");
-		if (from == null || from.size() != 1) {
-			System.err.println("argument --from is required.");
-			System.exit(-1);
-		}
-		indexPlanner.buildFromFolder(from.get(0));
-	}
+    @Override
+    public void run(ApplicationArguments args) throws IOException {
+        var from = args.getOptionValues("from");
+        if (from == null || from.size() != 1) {
+            System.err.println("argument --from is required.");
+            System.exit(-1);
+        }
+        indexPlanner.buildFromFolder(from.get(0));
+    }
 }

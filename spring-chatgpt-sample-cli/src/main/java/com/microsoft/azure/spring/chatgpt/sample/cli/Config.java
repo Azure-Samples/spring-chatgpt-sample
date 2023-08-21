@@ -33,7 +33,7 @@ public class Config {
     }
 
     @Bean
-    public AzureOpenAIClient AzureOpenAIClient() {
+    public AzureOpenAIClient azureOpenAIClient() {
         var innerClient = new OpenAIClientBuilder()
                 .endpoint(openAiEndpoint)
                 .credential(new AzureKeyCredential(openAiApiKey))
