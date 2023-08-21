@@ -295,7 +295,8 @@ To run the demo in the local machine, please follow these steps:
 1. Upload the vector store file to the Azure storage account built in the previous step.
 
    ```bash
-   az storage file upload -s ${FILE_SHARE_NAME} --source ./doc_store.json
+   az storage file upload -s ${FILE_SHARE_NAME} --account-name ${STORAGE_ACCOUNT_NAME} \
+      --account-key ${STORAGE_ACCOUNT_KEY} --source ./doc_store.json
    ```
 
 1. Use the following command to deploy the *.jar* file for the app:
@@ -306,11 +307,7 @@ To run the demo in the local machine, please follow these steps:
       --service ${SERVICE_NAME} \
       --name ${APP_NAME} \
       --artifact-path spring-chatgpt-sample-webapi/target/spring-chatgpt-sample-webapi-0.0.1-SNAPSHOT.jar \
-      --env AZURE_OPENAI_ENDPOINT=<your_azure_openai_endpoint> \    
-            AZURE_OPENAI_APIKEY=<your_api_key> \
-            AZURE_OPENAI_CHATDEPLOYMENTID=gpt-35-turbo \
-            AZURE_OPENAI_EMBEDDINGDEPLOYMENTID=text-embedding-ada-002 \
-            VECTORSTORE_FILE=/opt/spring-chatgpt-sample/doc_store.json \
+      --env AZURE_OPENAI_ENDPOINT=<your_azure_openai_endpoint> AZURE_OPENAI_APIKEY=<your_api_key> AZURE_OPENAI_CHATDEPLOYMENTID=gpt-35-turbo AZURE_OPENAI_EMBEDDINGDEPLOYMENTID=text-embedding-ada-002 VECTORSTORE_FILE=/opt/spring-chatgpt-sample/doc_store.json \
       --runtime-version Java_17
    ```
 
