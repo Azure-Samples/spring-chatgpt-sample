@@ -19,10 +19,6 @@
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.azure</groupId>
-			<artifactId>azure-ai-openai</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.microsoft.azure</groupId>
 			<artifactId>spring-chatgpt-sample-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

@@ -1,8 +1,7 @@
 package com.microsoft.azure.spring.chatgpt.sample.webapi.controllers;
 
 
-import com.azure.ai.openai.models.ChatCompletions;
-import com.microsoft.azure.spring.chatgpt.sample.common.ChatPlanner;
+import com.microsoft.azure.spring.chatgpt.sample.common.ChatSkill;
 import com.microsoft.azure.spring.chatgpt.sample.webapi.models.ChatCompletionsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final ChatPlanner planner;
+    private final ChatSkill chatSkill;
 
     @PostMapping("/completions")
-    public ChatCompletions chatCompletion(@RequestBody ChatCompletionsRequest request) {
-        return planner.chat(request.getMessages());
+    public String chatCompletion(@RequestBody ChatCompletionsRequest request) {
+        return chatSkill.chat(request.getMessages());
     }
 }

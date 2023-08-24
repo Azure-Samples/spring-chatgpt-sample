@@ -2,10 +2,12 @@ package com.microsoft.azure.spring.chatgpt.sample.webapi;
 
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
-import com.microsoft.azure.spring.chatgpt.sample.common.AzureOpenAIClient;
-import com.microsoft.azure.spring.chatgpt.sample.common.ChatPlanner;
-import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.SimpleMemoryVectorStore;
-import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.VectorStore;
+import com.microsoft.azure.spring.chatgpt.sample.common.ChatSkill;
+import com.microsoft.azure.spring.chatgpt.sample.common.vectorstore.PersistentMemoryStore;
+import com.microsoft.semantickernel.Kernel;
+import com.microsoft.semantickernel.SKBuilders;
+import com.microsoft.semantickernel.chatcompletion.ChatCompletion;
+import com.microsoft.semantickernel.memory.MemoryStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -31,22 +33,35 @@ public class Config {
     private String vectorJsonFile;
 
     @Bean
-    public ChatPlanner planner(AzureOpenAIClient openAIClient, VectorStore vectorStore) {
-        return new ChatPlanner(openAIClient, vectorStore);
+    public ChatSkill chat(Kernel kernel) {
+        return new ChatSkill(kernel);
     }
 
     @Bean
-    public AzureOpenAIClient azureOpenAIClient() {
-        var innerClient = new OpenAIClientBuilder()
-            .endpoint(endpoint)
-            .credential(new AzureKeyCredential(apiKey))
-            .buildClient();
-        return new AzureOpenAIClient(innerClient, embeddingDeploymentId, chatDeploymentId);
+    public Kernel kernel(MemoryStore memoryStore) {
+        var client = new OpenAIClientBuilder()
+                .endpoint(endpoint)
+                .credential(new AzureKeyCredential(apiKey))
+                .buildAsyncClient();
+        return SKBuilders.kernel()
+                .withAIService("chatGPT",
+                        SKBuilders.chatCompletion()
+                                .withOpenAIClient(client)
+                                .setModelId(chatDeploymentId)
+                                .build(),
+                        true,
+                        ChatCompletion.class)
+                .withDefaultAIService(SKBuilders.textEmbeddingGenerationService()
+                        .withOpenAIClient(client)
+                        .setModelId(embeddingDeploymentId)
+                        .build())
+                .withMemoryStorage(memoryStore)
+                .build();
     }
 
     @Bean
     @ConditionalOnProperty(name = "vector-store.type", havingValue = "memory", matchIfMissing = true)
-    public VectorStore vectorStore() {
-        return SimpleMemoryVectorStore.loadFromJsonFile(vectorJsonFile);
+    public MemoryStore memoryStore() {
+        return PersistentMemoryStore.loadFromFile(vectorJsonFile);
     }
 }

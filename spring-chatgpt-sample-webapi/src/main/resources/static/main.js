@@ -115,10 +115,10 @@ var app = new Vue({
       });
 
       try {
-        const data = await response.json();
+        const answer = await response.text();
         currentChat.messages.push({
           sender: "bot",
-          text: data.choices[0].message.content,
+          text: answer,
           timestamp: new Date().getTime()
         });
 

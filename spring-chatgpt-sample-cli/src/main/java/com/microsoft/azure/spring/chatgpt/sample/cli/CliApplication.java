@@ -1,6 +1,6 @@
 package com.microsoft.azure.spring.chatgpt.sample.cli;
 
-import com.microsoft.azure.spring.chatgpt.sample.common.DocumentIndexPlanner;
+import com.microsoft.azure.spring.chatgpt.sample.common.DocumentIndexSkill;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -13,7 +13,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CliApplication implements ApplicationRunner {
 
-    private final DocumentIndexPlanner indexPlanner;
+    private final DocumentIndexSkill documentIndexSkill;
 
     public static void main(String[] args) {
         SpringApplication.run(CliApplication.class, args);
@@ -26,6 +26,6 @@ public class CliApplication implements ApplicationRunner {
             System.err.println("argument --from is required.");
             System.exit(-1);
         }
-        indexPlanner.buildFromFolder(from.get(0));
+        documentIndexSkill.buildFromFolder(from.get(0));
     }
 }
