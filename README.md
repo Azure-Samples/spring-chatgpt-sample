@@ -4,14 +4,13 @@ languages:
 - azdeveloper
 - java
 - bicep
-- css
 - javascript
 - html
 products:
 - azure
 - azure-spring-apps
 - azure-blob-storage
-- azure-openai-service
+- azure-openai
 urlFragment: spring-chatgpt-sample
 name: Spring ChatGPT Application using Azure OpenAI on Azure Spring Apps (Java)
 description: This sample shows how to build a ChatGPT like application with Java in Spring and run on Azure Spring Apps. It enables ChatGPT to use your private data to answer the questions.
